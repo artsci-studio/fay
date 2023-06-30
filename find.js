@@ -249,16 +249,19 @@ function toggleDropdown(event) {
   for (var i = 0; i < dropdownElements.length; i++) {
     if (dropdownElements[i] !== clickedDropdown) {
       dropdownElements[i].classList.remove("open");
+      clickedDropdown.setAttribute('aria-expanded', "false");
     }
   }
 
   // Toggle clicked dropdown
   clickedDropdown.classList.toggle("open");
+  clickedDropdown.setAttribute('aria-expanded', "true");
 }
 
 function closeDropdown(event) {
   var dropdown = event.currentTarget.closest(".hero_dropdown-wrap");
   dropdown.classList.remove("open");
+  dropdown.setAttribute('aria-expanded', "false");
 }
 
 function closeDropdownsOutsideForm(event) {
@@ -268,6 +271,7 @@ function closeDropdownsOutsideForm(event) {
   if (!isDropdownClicked) {
     for (var i = 0; i < dropdownElements.length; i++) {
       dropdownElements[i].classList.remove("open");
+      dropdownElements[i].setAttribute('aria-expanded', "false");
     }
   }
 }
