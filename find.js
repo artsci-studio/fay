@@ -351,5 +351,5 @@ document.addEventListener("DOMContentLoaded", function () {
   var event = new Event("input", { bubbles: true });
   input1.dispatchEvent(event);
   sessionStorage.removeItem("inputText");
-  console.log("loaded");
+  console.log("page loaded");
 });
