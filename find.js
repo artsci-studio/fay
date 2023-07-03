@@ -332,8 +332,22 @@ clear.forEach(function (button) {
 document.addEventListener("DOMContentLoaded", function () {
   initAutocomplete();
   delayedCountAll();
-  const inputText = sessionStorage.getItem("inputText");
-  input1.value = inputText;
+  var inputText = sessionStorage.getItem("inputText");
+  if (inputText !== null && inputText !== undefined) {
+    // Populate the input with the stored value from homepage
+    input1.value = inputText;
+  } else {
+    // Populate with state value if set
+    var urlParams = new URLSearchParams(window.location.search);
+    var urlValue = urlParams.get("states");
+    if (urlValue) {
+      urlValue = urlValue.replace(/-/g, " ");
+      urlValue = urlValue.replace(/\b\w/g, function (match) {
+        return match.toUpperCase();
+      });
+      input1.value = urlValue;
+    }
+  }
   var event = new Event("input", { bubbles: true });
   input1.dispatchEvent(event);
   console.log("loaded");
