@@ -256,6 +256,7 @@ function toggleDropdown(event) {
   // Toggle clicked dropdown
   clickedDropdown.classList.toggle("open");
   clickedDropdown.setAttribute('aria-expanded', "true");
+  console.log("opened");
 }
 
 function closeDropdown(event) {
