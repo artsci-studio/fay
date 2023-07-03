@@ -336,7 +336,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (inputText !== null && inputText !== undefined) {
     // Populate the input with the stored value from homepage
     input1.value = inputText;
-    inputText = null;
+    sessionStorage.removeItem("inputText");
   } else {
     // Populate with state value if set
     var urlParams = new URLSearchParams(window.location.search);
