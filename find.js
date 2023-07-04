@@ -280,6 +280,8 @@ clearLocation.addEventListener("click", function () {
 clearAll.addEventListener("click", function () {
   clearInput();
   updateCountAll();
+  setTimeout(updateSCount, 200);
+  setTimeout(updateMCount, 200);
 });
 
 // Open and save dropdowns
