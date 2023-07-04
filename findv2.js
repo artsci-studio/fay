@@ -282,6 +282,9 @@ clearAll.addEventListener("click", function () {
   updateCountAll();
   setTimeout(updateSCount, 200);
   setTimeout(updateMCount, 200);
+  distanceRadios.forEach(function (radio) {
+      radio.disabled = false;
+    });
 });
 
 // Open and save dropdowns
