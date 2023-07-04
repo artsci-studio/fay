@@ -1,182 +1,55 @@
-//all
-const countElementAll = document.querySelector("#filter-count");
+let selectedSpecialties = null;
+let selectedInsurance = null;
+let selectedState = null;
 
-// specialties
-const countS = document.querySelector("#count-specialties");
-const Scheckboxes = document.querySelectorAll(".checkbox-filter-s");
+let locationInputs = document.querySelectorAll(".input-field");
+let specialtyLabel = document.getElementById("specialties-label");
+let insuranceLabel = document.getElementById("insurance-label");
 
-//modalities
-const countM = document.querySelector("#count-modalities");
-const Mcheckboxes = document.querySelectorAll(".checkbox-filter-m");
-
-
-//show total count for modalities and specialties on mobile
-function updateCountAll() {
-  const linkBlockS = countS.querySelectorAll(".filter-applied");
-  const linkBlockM = countM.querySelectorAll(".filter-applied");
-  const count = linkBlockS.length - 1 + (linkBlockM.length - 1);
-  countElementAll.textContent = "(" + count + ")";
-  if (count === 0) {
-    countElementAll.style.display = "none";
-  } else {
-    countElementAll.style.display = "block";
-  }
-}
-
-function delayedCountAll() {
-  setTimeout(updateCountAll, 300);
-}
-
-Scheckboxes.forEach((checkbox) => {
-  checkbox.addEventListener("click", updateCountAll);
-});
-
-Mcheckboxes.forEach((checkbox) => {
-  checkbox.addEventListener("click", updateCountAll);
-});
-
-document
-  .querySelector("#clear-filters")
-  .addEventListener("click", delayedCountAll);
-
-window.onload = function () {
-  updateCountAll();
-};
-
-//dont scroll the website when a popup is open
-
-Webflow.push(function () {
-  $(".popup-trigger").click(function (e) {
-    e.preventDefault();
-    $("body").css("overflow", "hidden");
-  });
-  $(".close").click(function (e) {
-    e.preventDefault();
-    $("body").css("overflow", "auto");
-  });
-});
-
-
-
-const zipCodeInputs = document.querySelectorAll(".zip-input");
-const stateCheckboxes = document.getElementsByClassName("state-checkbox");
-const zipAlert = document.getElementById("zip-code-alert");
-
-
-// Select the list element
-let stateFilterWrap = document.querySelector(".count-state");
-
-// Create a new MutationObserver
-let observer = new MutationObserver(function (mutations) {
-  // Loop through each mutation
-  mutations.forEach(function (mutation) {
-    // Check if the list has only one item
-    if (stateFilterWrap.children.length === 1) {
-      // Trigger your action here
-      zipCodeInputs.forEach(function (input) {
-        input.value = "";
-      });
-    }
-  });
-});
-
-// Configure the observer to watch for changes to the list
-let config = { childList: true };
-
-// Start observing the list
-observer.observe(stateFilterWrap, config);
-
-//prevent form from submitting on enter
-// Get the button and input elements
-const form = document.getElementById("filter-form");
-const mobileForm = document.getElementById("loction-form");
-
-form.addEventListener("keypress", function preventSubmit() {
-  if (event.key === "Enter") {
-    event.preventDefault(); // Prevent the default form submission
-  }
-});
-
-mobileForm.addEventListener("keypress", function preventSubmit() {
-  if (event.key === "Enter") {
-    event.preventDefault(); // Prevent the default form submission
-  }
-});
-
-//match zip code inputs
-const input1 = document.getElementById("zipCodeInput1");
-const input2 = document.getElementById("zipCodeInput2");
-const input3 = document.getElementById("zipCodeInput3");
-
-input1.addEventListener("input", function () {
-  input2.value = input1.value;
-  input3.value = input1.value;
-});
-
-input2.addEventListener("input", function () {
-  input1.value = input2.value;
-  input3.value = input2.value;
-});
-
-input3.addEventListener("input", function () {
-  input1.value = input3.value;
-  input2.value = input3.value;
-});
-
-//show total number of dietitians every time list is filtered
-let dietitianList = document.getElementById("dietitian-list-1");
-
+const insuranceRadio = document.querySelectorAll('input[name="Insurance"]');
 
 //autocomplete
-var autocompleteTimer; // Variable to hold the timer ID
+var autocompleteTimer; 
 var requestCounter = 0;
 
 function initAutocomplete() {
   var options = {
     types: ["(regions)"],
-    componentRestrictions: { country: "us" } // Restrict results to the United States
+    componentRestrictions: { country: "us" } 
   };
-  zipCodeInputs.forEach((zipCodeInput) => {
+  locationInputs.forEach((locationInput) => {
     var autocomplete = new google.maps.places.Autocomplete(
-      zipCodeInput,
+      locationInput,
       options
     );
 
-    zipCodeInput.addEventListener("input", function () {
-      clearTimeout(autocompleteTimer); // Clear the previous timer
-      var input = zipCodeInput.value;
-
-      // Set a new timer to delay the request
+    locationInput.addEventListener("input", function () {
+      closeSpecialty();
+      closeInsurance();
+      clearTimeout(autocompleteTimer);
+      var input = locationInput.value;
+      if (input === "") {
+        selectedState = null;
+        createURL();
+      }
       autocompleteTimer = setTimeout(function () {
         if (input.trim() !== "") {
-          // Perform the autocomplete request
           autocomplete.getPlace();
           requestCounter++; // Increment the counter
-          console.log("Number of Requests: ", requestCounter);
+          console.log("calls:", requestCounter);
         }
-      }, 500); // Adjust the delay time (in milliseconds) as needed
+      }, 500);
 
       if (input.trim() === "") {
-        console.log("empty");
-        let stateFilter = document.querySelectorAll(
-          ".filter-applied.jetboost-applied-filter-item-b977.static.st-filter.w-inline-block"
-        );
-        for (let i = 0; i < stateFilter.length; i++) {
-          stateFilter[i].click();
-        }
         return;
       }
     });
     autocomplete.addListener("place_changed", function () {
-      console.log("place changed");
       var place = autocomplete.getPlace();
       if (!place.geometry) {
-        // Invalid place selected
         console.log("error");
         return;
       }
-
-      // Retrieve the selected zip code, city, and state
       var zipCode = "";
       var city = "";
       var state = "";
@@ -197,40 +70,242 @@ function initAutocomplete() {
           }
         }
       }
-
-      if (state !== null) {
-        // Loop through the checkboxes to find a match and check it
-        for (let i = 0; i < stateCheckboxes.length; i++) {
-          const labelSpan = stateCheckboxes[i].nextElementSibling;
-          if (labelSpan.textContent === state) {
-            stateCheckboxes[i].checked = true;
-            stateCheckboxes[i].click();
-            break; // Exit the loop once a match is found
-          }
-        }
-      }
-
-      console.log("Selected State:", state);
-      // Trigger the input event
+      selectedState = state;
       var event = new Event("input", { bubbles: true });
-      zipCodeInput.dispatchEvent(event);
+      locationInput.dispatchEvent(event);
+      createURL();
     });
   });
 }
 
+insuranceRadio.forEach(function (radio) {
+  radio.addEventListener("change", function () {
+    const nextElement = this.nextElementSibling;
+    selectedInsurance = nextElement.textContent;
+    insuranceLabel.textContent = selectedInsurance;
+    insuranceLabel.style.color = "#141529";
+    createURL();
+  });
+});
+
+function handleCheckboxChange() {
+  var checkboxes = document.getElementsByClassName("specialty");
+  selectedSpecialties = "";
+  var selectedValues = [];
+  var textBox = "";
+  for (var i = 0; i < checkboxes.length; i++) {
+    var checkbox = checkboxes[i];
+    var label = checkbox.parentNode.textContent.trim();
+    if (checkbox.checked) {
+      if (label === "Eating Disorders & Disordered Eating") {
+        label = "Eating Disorders";
+      } else if (label === "Food Allergies & Sensitivities") {
+        label = "Food Allergies";
+      } else if (label === "Vegan & Vegetarian") {
+        label = "Vegan Vegetarian";
+      }
+
+      selectedValues.push(label);
+      textBox += label;
+      selectedSpecialties +=
+        label
+          .replace(/\s+/g, "-")
+          .replace(/[^\w\s-]/g, "")
+          .toLowerCase() + "%7C";
+    } else {
+      var index = selectedValues.indexOf(checkbox.value);
+      if (index !== -1) {
+        selectedValues.splice(index, 1);
+      }
+      var commaSeparatedList = selectedValues.join(", ");
+      specialtyLabel.textContent = commaSeparatedList;
+      specialtyLabel.style.color = "#141529";
+    }
+    if (selectedSpecialties === "") {
+      specialtyLabel.textContent = "Specialties";
+      specialtyLabel.style.color = "#949494";
+    }
+    createURL();
+  }
+}
+
+let finalURL = "/find?";
+
+function createURL() {
+  finalURL = "/find?";
+  let stateURL;
+  let insuranceURL;
+  let specialtyURL;
+  if (selectedState != null) {
+    stateURL = selectedState.replace(/\s+/g, "-").replace(/[^\w\s-]/g, "");
+    finalURL = finalURL.concat("&states=", stateURL);
+  }
+  if (selectedInsurance != null) {
+    insuranceURL = selectedInsurance
+      .replace(/\s+/g, "-")
+      .replace(/[^\w\s-]/g, "");
+    finalURL = finalURL.concat("&insurance=", insuranceURL);
+  }
+  if (selectedSpecialties != null) {
+    specialtyURL = selectedSpecialties;
+    finalURL = finalURL.concat("&specialties=", specialtyURL);
+  }
+  const url = "https://www.faynutrition.com" + finalURL.toLowerCase();
+}
+
+//open and save dropdowns
+var saveSpecialties = document.getElementById("save-specialty");
+var specialtyTog = document.getElementById("specialty-tog");
+var saveInsurance = document.getElementById("save-insurance");
+var insuranceTog = document.getElementById("insurance-tog");
+var insuranceDrop = document.getElementById("insurance-dropdown");
+var specialtyDrop = document.getElementById("specialty-dropdown");
+
+function toggleSpecialty() {
+  document.getElementById("specialty-icon").classList.toggle("flipped");
+  specialtyDrop.classList.toggle("open");
+}
+
+function toggleInsurance() {
+  document.getElementById("insurance-icon").classList.toggle("flipped");
+  insuranceDrop.classList.toggle("open");
+}
+
+function closeSpecialty() {
+  document.getElementById("specialty-icon").classList.remove("flipped");
+  specialtyDrop.classList.remove("open");
+}
+
+function closeInsurance() {
+  document.getElementById("insurance-icon").classList.remove("flipped");
+  insuranceDrop.classList.remove("open");
+}
+
+specialtyTog.addEventListener("click", toggleSpecialty);
+specialtyTog.addEventListener("click", closeInsurance);
+insuranceTog.addEventListener("click", toggleInsurance);
+insuranceTog.addEventListener("click", closeSpecialty);
+saveSpecialties.addEventListener("click", closeSpecialty);
+saveInsurance.addEventListener("click", closeInsurance);
+
+function handleClickOutside(event) {
+  if (!form.contains(event.target)) {
+    closeSpecialty();
+    closeInsurance();
+  }
+}
+
+//clear button
+var clearSpecialties = document.getElementById("clear-specialties");
+var clearSpecialtiesM = document.getElementById("clear-specialties-m");
+var clearInsurance = document.getElementById("clear-insurance");
+var clearInsuranceM = document.getElementById("clear-insurance-m");
+var clearLocation = document.getElementById("clear-location-m");
+
+function clearCheckboxes() {
+  var checkboxes = document.getElementsByClassName("specialty");
+  for (var i = 0; i < checkboxes.length; i++) {
+    checkboxes[i].checked = false;
+  }
+  selectedSpecialties = null;
+  specialtyLabel.textContent = "Specialties";
+  specialtyLabel.style.color = "#949494";
+  setTimeout(() => {
+    createURL();
+  }, 200);
+}
+
+function clearRadios() {
+  console.log("clear");
+  for (var i = 0; i < insuranceRadio.length; i++) {
+    insuranceRadio[i].checked = false;
+  }
+  selectedInsurance = null;
+  insuranceLabel.textContent = "Insurance";
+  insuranceLabel.style.color = "#949494";
+  createURL();
+}
+
 function clearInput() {
-  input3.value = "";
   input2.value = "";
   input1.value = "";
   var event = new Event("input", { bubbles: true });
-  input3.dispatchEvent(event);
+  input2.dispatchEvent(event);
+  selectedState = null;
+  createURL();
 }
 
-let clearLocation = document.getElementById("clear-filter-location");
-clearLocation.addEventListener("click", function () {
-  clearInput();
+// Add a click event listener to the button
+clearSpecialties.addEventListener("click", clearCheckboxes);
+clearSpecialtiesM.addEventListener("click", clearCheckboxes);
+clearInsurance.addEventListener("click", clearRadios);
+clearInsuranceM.addEventListener("click", clearRadios);
+clearLocation.addEventListener("click", clearInput);
+
+//match zip code inputs
+const input1 = document.getElementById("inputText1");
+const input2 = document.getElementById("inputTextMobile");
+
+input1.addEventListener("input", function () {
+  input2.value = input1.value;
+});
+
+input2.addEventListener("input", function () {
+  input1.value = input2.value;
+});
+
+//prevent enter from submitting form
+const form = document.getElementById("hero-form");
+const mobileForm = document.getElementById("location-form");
+
+form.addEventListener("keypress", function preventSubmit() {
+  if (event.key === "Enter") {
+    event.preventDefault();
+  }
+});
+
+mobileForm.addEventListener("keypress", function preventSubmit() {
+  if (event.key === "Enter") {
+    event.preventDefault(); 
+  }
+});
+
+//prevent scroll when popup is open
+Webflow.push(function () {
+  $(".popup-trigger").click(function (e) {
+    e.preventDefault();
+    $("body").css("overflow", "hidden");
+  });
+  $(".close").click(function (e) {
+    e.preventDefault();
+    $("body").css("overflow", "auto");
+  });
+});
+
+function storeInputText() {
+  closeSpecialty();
+  closeInsurance();
+  document.getElementById("loading-div").style.display = "block";
+  const inputText = input1.value;
+  sessionStorage.setItem("inputText", inputText);
+  window.location.href = finalURL.toLowerCase();
+}
+
+document.addEventListener("click", function (event) {
+  handleClickOutside(event);
+});
+
+window.addEventListener("pageshow", function (event) {
+  if (event.persisted) {
+    document.getElementById("loading-div").style.display = "none";
+  }
 });
 
 document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("loading-div").style.display = "none";
   initAutocomplete();
+  var checkboxes = document.getElementsByClassName("specialty");
+  for (var i = 0; i < checkboxes.length; i++) {
+    checkboxes[i].addEventListener("change", handleCheckboxChange);
+  }
 });
