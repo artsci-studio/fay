@@ -1,27 +1,60 @@
+//Filter counting functions
 //all
 const countElementAll = document.querySelector("#filter-count");
 
 // specialties
 const countS = document.querySelector("#count-specialties");
 const Scheckboxes = document.querySelectorAll(".checkbox-filter-s");
+const Snumbers = document.querySelectorAll(".specialty-number");
 
 //modalities
 const countM = document.querySelector("#count-modalities");
 const Mcheckboxes = document.querySelectorAll(".checkbox-filter-m");
+const Mnumbers = document.querySelectorAll(".modality-number");
 
-//clear all
+//clear buttons
 const clearAll = document.querySelector(".jetboost-list-wrapper-empty-b977");
+const clearM = document.querySelector(".jetboost-filter-none-1wl3");
+const clearS = document.querySelector(".jetboost-filter-none-89p7");
 
 //show total count for modalities and specialties on mobile
 function updateCountAll() {
-  const linkBlockS = countS.querySelectorAll(".filter-applied");
-  const linkBlockM = countM.querySelectorAll(".filter-applied");
-  const count = linkBlockS.length - 1 + (linkBlockM.length - 1);
+  var linkBlockS = countS.querySelectorAll(".filter-applied");
+  var linkBlockM = countM.querySelectorAll(".filter-applied");
+  var count = linkBlockS.length - 1 + (linkBlockM.length - 1);
   countElementAll.textContent = "(" + count + ")";
   if (count === 0) {
     countElementAll.style.display = "none";
   } else {
     countElementAll.style.display = "block";
+  }
+}
+
+function updateSCount() {
+  var linkBlockS = countS.querySelectorAll(".filter-applied");
+  var count = linkBlockS.length - 1;
+  for (var i = 0; i < Snumbers.length; i++) {
+    var Snumber = Snumbers[i];
+    Snumber.textContent = "(" + count + ")";
+    if (count === 0) {
+      Snumber.style.display = "none";
+    } else {
+      Snumber.style.display = "block";
+    }
+  }
+}
+
+function updateMCount() {
+  var linkBlockM = countM.querySelectorAll(".filter-applied");
+  var count = linkBlockM.length - 1;
+  for (var i = 0; i < Mnumbers.length; i++) {
+    var Mnumber = Mnumbers[i];
+    Mnumber.textContent = "(" + count + ")";
+    if (count === 0) {
+      Mnumber.style.display = "none";
+    } else {
+      Mnumber.style.display = "block";
+    }
   }
 }
 
@@ -31,10 +64,19 @@ function delayedCountAll() {
 
 Scheckboxes.forEach((checkbox) => {
   checkbox.addEventListener("click", updateCountAll);
+  checkbox.addEventListener("click", updateSCount);
 });
 
 Mcheckboxes.forEach((checkbox) => {
   checkbox.addEventListener("click", updateCountAll);
+  checkbox.addEventListener("click", updateMCount);
+});
+
+clearM.addEventListener("click", function delayClear() {
+  setTimeout(updateMCount, 200);
+});
+clearS.addEventListener("click", function delayClear() {
+  setTimeout(updateSCount, 200);
 });
 
 document
@@ -43,7 +85,10 @@ document
 
 window.onload = function () {
   updateCountAll();
+  updateMCount();
+  updateSCount();
 };
+
 
 //dont scroll the website when a popup is open
 
