@@ -105,13 +105,15 @@ function handleCheckboxChange() {
         label = "Vegan Vegetarian";
       }
 
-      selectedValues.push(label);
-      textBox += label;
-      selectedSpecialties +=
-        label
-          .replace(/\s+/g, "-")
-          .replace(/[^\w\s-]/g, "")
-          .toLowerCase() + "%7C";
+      if (!selectedValues.includes(label)) { // Check if the label is already in the list
+        selectedValues.push(label);
+        textBox += label;
+        selectedSpecialties +=
+          label
+            .replace(/\s+/g, "-")
+            .replace(/[^\w\s-]/g, "")
+            .toLowerCase() + "%7C";
+      }
     } else {
       var index = selectedValues.indexOf(checkbox.value);
       if (index !== -1) {
