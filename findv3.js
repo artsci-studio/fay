@@ -414,7 +414,6 @@ clearNew.addEventListener("click", function () {
 
 document.addEventListener("DOMContentLoaded", function () {
   initAutocomplete();
-  delayedCountAll();
   var inputText = sessionStorage.getItem("inputText");
   if (inputText !== null && inputText !== undefined) {
     // Populate the input with the stored value from homepage
@@ -434,5 +433,6 @@ document.addEventListener("DOMContentLoaded", function () {
   var event = new Event("input", { bubbles: true });
   input1.dispatchEvent(event);
   sessionStorage.removeItem("inputText");
+  delayedCountAll();
   console.log("page loaded");
 });
