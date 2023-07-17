@@ -134,7 +134,6 @@ function handleCheckboxChange() {
       if (otherSlug === slug && otherCheckbox.checked !== checkbox.checked) {
         otherCheckbox.checked = true;
         checkbox.checked = true;
-        //checkbox.checked = otherCheckbox.checked;
         if (checkbox.checked) {
           slugToCheckedMap[otherSlug] = true;
         } else {
