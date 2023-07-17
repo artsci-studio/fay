@@ -92,27 +92,24 @@ function handleCheckboxChange() {
   var checkboxes = document.getElementsByClassName("specialty");
   selectedSpecialties = "";
   var selectedValues = [];
+  var slugToCheckedMap = {};
   var textBox = "";
   for (var i = 0; i < checkboxes.length; i++) {
     var checkbox = checkboxes[i];
+    var slug = checkbox.getAttribute("asci");
     var label = checkbox.parentNode.textContent.trim();
     if (checkbox.checked) {
       if (label === "Eating Disorders & Disordered Eating") {
         label = "Eating Disorders";
       } else if (label === "Food Allergies & Sensitivities") {
         label = "Food Allergies";
-      } else if (label === "Vegan & Vegetarian") {
-        label = "Vegan Vegetarian";
       }
-
-      if (!selectedValues.includes(label)) { // Check if the label is already in the list
+      if (!selectedValues.includes(label)) {
+        // Check if the label is already in the list
         selectedValues.push(label);
         textBox += label;
-        selectedSpecialties +=
-          label
-            .replace(/\s+/g, "-")
-            .replace(/[^\w\s-]/g, "")
-            .toLowerCase() + "%7C";
+        selectedSpecialties += slug + "%7C";
+        slugToCheckedMap[slug] = true;
       }
     } else {
       var index = selectedValues.indexOf(checkbox.value);
@@ -122,10 +119,28 @@ function handleCheckboxChange() {
       var commaSeparatedList = selectedValues.join(", ");
       specialtyLabel.textContent = commaSeparatedList;
       specialtyLabel.style.color = "#141529";
+      delete slugToCheckedMap[slug];
     }
     if (selectedSpecialties === "") {
       specialtyLabel.textContent = "Specialties";
       specialtyLabel.style.color = "#949494";
+    }
+
+    // Check or uncheck other checkboxes with the same slug
+    for (var j = 0; j < checkboxes.length; j++) {
+      var otherCheckbox = checkboxes[j];
+      var otherSlug = otherCheckbox.getAttribute("asci");
+
+      if (otherSlug === slug && otherCheckbox.checked !== checkbox.checked) {
+        otherCheckbox.checked = true;
+        checkbox.checked = true;
+        //checkbox.checked = otherCheckbox.checked;
+        if (checkbox.checked) {
+          slugToCheckedMap[otherSlug] = true;
+        } else {
+          delete slugToCheckedMap[otherSlug];
+        }
+      }
     }
     createURL();
   }
