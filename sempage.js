@@ -305,5 +305,4 @@ document.addEventListener("DOMContentLoaded", function () {
   for (var i = 0; i < checkboxes.length; i++) {
     checkboxes[i].addEventListener("change", handleCheckboxChange);
   }
-  console.log("code sandbox");
 });
