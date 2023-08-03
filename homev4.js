@@ -302,17 +302,14 @@ function storeInputText() {
   if (selectedInsurance == null || selectedState == null) {
     heroAlert.style.display = "block";
     if (selectedInsurance == null && selectedState != null) {
-      console.log("no insurance");
       insuranceAlert.style.display = "inline-block";
       stateAlert.style.display = "none";
       andAlert.style.display = "none";
     } else if (selectedInsurance != null && selectedState == null) {
-      console.log("no state");
       stateAlert.style.display = "inline-block";
       insuranceAlert.style.display = "none";
       andAlert.style.display = "none";
     } else if (selectedInsurance == null && selectedState == null) {
-      console.log("no insurance or state");
       stateAlert.style.display = "inline-block";
       insuranceAlert.style.display = "inline-block";
       andAlert.style.display = "inline-block";
