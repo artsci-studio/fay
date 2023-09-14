@@ -344,15 +344,7 @@ var distanceRadios = document.querySelectorAll('input[name="distance"]');
 var clear = document.querySelectorAll(".clear-more-filters");
 var clearDriving = document.querySelector("#clear-driving");
 var clearNew = document.querySelector(".button-clear-all");
-//new
-var distanceLabel = document.querySelector(
-  ".modal-filter_field-label.distance-label"
-);
-var mobileDistanceLabel = document.querySelector(
-  ".mobile-field-label.is-distance"
-);
 
-//new end
 
 function handleTypeChange(distanceRadios) {
   var typeRadio = document.querySelector('input[name="type"]:checked');
@@ -363,19 +355,10 @@ function handleTypeChange(distanceRadios) {
       radio.disabled = true;
       radio.checked = false; // Deselect all radio buttons in "Distance" group
     });
-    //new
-    distanceLabel.classList.add("deselected");
-    mobileDistanceLabel.classList.add("deselected"); // Add the "deselected" class to the mobile distance label
-    //new end
   } else {
     distanceRadios.forEach(function (radio) {
       radio.disabled = false;
     });
-
-    //new
-    distanceLabel.classList.remove("deselected"); // Remove the "deselected" class from the distance label
-    mobileDistanceLabel.classList.remove("deselected"); // Remove the "deselected" class from the mobile distance label
-    //new end
   }
 }
 //var distanceLabels = document.querySelectorAll('.distance-label');
@@ -391,23 +374,9 @@ clear.forEach(function (button) {
     distanceRadios.forEach(function (radio) {
       radio.disabled = false;
     });
-    //new
-    distanceLabel.classList.remove("deselected"); // Remove the "deselected" class when clearing filters
-    mobileDistanceLabel.classList.remove("deselected"); // Remove the "deselected" class from the mobile distance label when clearing filters
-    //new end
   });
 });
 
-//new
-clearNew.addEventListener("click", function () {
-  distanceRadios.forEach(function (radio) {
-    radio.disabled = false;
-  });
-
-  distanceLabel.classList.remove("deselected");
-  mobileDistanceLabel.classList.remove("deselected");
-});
-//end
 
 //on load
 
