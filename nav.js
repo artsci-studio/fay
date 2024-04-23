@@ -8,8 +8,19 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-let tabLinks = $(".navbar12_dropdown-link-block");
-let tabPanel = $("nav_tab-pane");
+const dropdownList = document.querySelector('.navbar12_dropdown-list');
+
+const observer = new MutationObserver((mutationsList) => {
+  mutationsList.forEach((mutation) => {
+    if (!mutation.target.classList.contains('w--open')) {
+      console.log("The dropdown list is closed.");
+    }
+  });
+});
+
+observer.observe(dropdownList, { attributes: true });
+
+
 let menuWrap = $(".mobile-menu");
 let menuPanels = $(".menu-panel");
 let contentMore = $(".content-more");
@@ -20,11 +31,6 @@ let backFirst = $(".go-back");
 let backSecond = $(".back-sub");
 let previouslyFocused;
 let active;
-
-showTabPanel.on("hover", function () {
-  let linkIndex = $(this).index();
-  tabPanel.eq(linkIndex).show();
-});
 
 let showSubMenu = gsap.timeline({
   paused: true,
