@@ -8,17 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-const dropdownList = document.querySelector('.navbar12_dropdown-list');
-
-const observer = new MutationObserver((mutationsList) => {
-  mutationsList.forEach((mutation) => {
-    if (!mutation.target.classList.contains('w--open')) {
-      console.log("The dropdown list is closed.");
-    }
-  });
-});
-
-observer.observe(dropdownList, { attributes: true });
 
 
 let menuWrap = $(".mobile-menu");
