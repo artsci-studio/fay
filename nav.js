@@ -1,19 +1,3 @@
-
-const tabs = document.querySelectorAll('.nav_tab-link');
-const tabPanes = document.querySelectorAll('.nav_tab-pane');
-
-tabs.forEach((tab, tabIndex) => {
-  tab.addEventListener('mouseover', () => {
-      // Remove the 'active' class from all tabs and tab panes
-      tabs.forEach(t => t.classList.remove('active'));
-      tabPanes.forEach(pane => pane.classList.remove('active'));
-
-      // Add the 'active' class to the hovered tab and corresponding tab pane
-      tab.classList.add('active');
-      tabPanes[tabIndex].classList.add('active');
-  });
-});
-
 let menuWrap = $(".mobile-menu");
 let menuPanels = $(".menu-panel");
 let contentMore = $(".content-more");
