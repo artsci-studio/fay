@@ -114,7 +114,7 @@ function handleCheckboxChange() {
       selectedSpecialties +=
         label
           .replace(/\s+/g, "+")
-          .replace(/[^\w\s-]/g, "")
+          .replace(/[^\w\s-]/g, "") + "%7C";
     } else {
       var index = selectedValues.indexOf(checkbox.value);
       if (index !== -1) {
