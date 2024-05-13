@@ -113,7 +113,7 @@ function handleCheckboxChange() {
       textBox += label;
       selectedSpecialties +=
         label
-          .replace(/\s+/g, "-")
+          .replace(/\s+/g, "+")
           .replace(/[^\w\s-]/g, "")
     } else {
       var index = selectedValues.indexOf(checkbox.value);
@@ -140,12 +140,12 @@ function createURL() {
   let insuranceURL;
   let specialtyURL;
   if (selectedState != null) {
-    stateURL = selectedState.replace(/\s+/g, "-").replace(/[^\w\s-]/g, "");
+    stateURL = selectedState.replace(/\s+/g, "+").replace(/[^\w\s-]/g, "");
     finalURL = finalURL.concat("&state=", stateURL);
   }
   if (selectedInsurance != null) {
     insuranceURL = selectedInsurance
-      .replace(/\s+/g, "-")
+      .replace(/\s+/g, "+")
       .replace(/[^\w\s-]/g, "");
     finalURL = finalURL.concat("&insurance=", insuranceURL);
   }
