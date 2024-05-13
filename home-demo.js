@@ -115,7 +115,6 @@ function handleCheckboxChange() {
         label
           .replace(/\s+/g, "-")
           .replace(/[^\w\s-]/g, "")
-          .toLowerCase() + "%7C";
     } else {
       var index = selectedValues.indexOf(checkbox.value);
       if (index !== -1) {
