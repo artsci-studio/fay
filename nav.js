@@ -109,3 +109,55 @@ lastItem.on("keydown", function (e) {
   }
 })
 })
+
+// Function to get URL parameters
+function getUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    const utmParams = {};
+    for (const [key, value] of params.entries()) {
+        if (key.startsWith('utm_')) {
+            utmParams[key] = value;
+        }
+    }
+    return utmParams;
+}
+
+// Function to set UTM parameters in local storage
+function setUtmParams(params) {
+    for (const key in params) {
+        localStorage.setItem(key, params[key]);
+    }
+}
+
+// Function to get UTM parameters from local storage
+function getStoredUtmParams() {
+    const utmParams = {};
+    for (const key in localStorage) {
+        if (key.startsWith('utm_')) {
+            utmParams[key] = localStorage.getItem(key);
+        }
+    }
+    return utmParams;
+}
+
+// Function to append UTM parameters to links
+function appendUtmParamsToLinks(utmParams) {
+    if (Object.keys(utmParams).length > 0) {
+        const paramsString = new URLSearchParams(utmParams).toString();
+        document.querySelectorAll('a').forEach(link => {
+            const url = new URL(link.href);
+            url.search += (url.search ? '&' : '') + paramsString;
+            link.href = url.toString();
+        });
+    }
+}
+
+// On page load
+document.addEventListener('DOMContentLoaded', () => {
+    const currentParams = getUrlParams();
+    if (Object.keys(currentParams).length > 0) {
+        setUtmParams(currentParams);
+    }
+    const storedParams = getStoredUtmParams();
+    appendUtmParamsToLinks(storedParams);
+});
