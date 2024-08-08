@@ -110,44 +110,55 @@ lastItem.on("keydown", function (e) {
 })
 })
 
-// Function to get URL parameters
 function getUrlParams() {
     const params = new URLSearchParams(window.location.search);
-    const utmParams = {};
+    const allParams = [];
     for (const [key, value] of params.entries()) {
-        if (key.startsWith('utm_')) {
-            utmParams[key] = value;
+        allParams.push([key, value]);
+    }
+    return allParams;
+}
+
+// Function to set UTM parameters in session storage
+function setUtmParams(params) {
+    for (const [key, value] of params) {
+        if (key.startsWith('utm_') || ['ad_id', 'adset_id', 'placement', 'site_source_name', 'fbclid'].includes(key)) {
+            sessionStorage.setItem(key, value);
         }
     }
-    return utmParams;
 }
 
-// Function to set UTM parameters in local storage
-function setUtmParams(params) {
-    for (const key in params) {
-        localStorage.setItem(key, params[key]);
-    }
-}
-
-// Function to get UTM parameters from local storage
+// Function to get UTM parameters from session storage
 function getStoredUtmParams() {
-    const utmParams = {};
-    for (const key in localStorage) {
-        if (key.startsWith('utm_')) {
-            utmParams[key] = localStorage.getItem(key);
+    const utmParams = [];
+    for (const key in sessionStorage) {
+        if (key.startsWith('utm_') || ['ad_id', 'adset_id', 'placement', 'site_source_name', 'fbclid'].includes(key)) {
+            utmParams.push([key, sessionStorage.getItem(key)]);
         }
     }
     return utmParams;
 }
 
 // Function to append UTM parameters to links
-function appendUtmParamsToLinks(utmParams) {
-    if (Object.keys(utmParams).length > 0) {
-        const paramsString = new URLSearchParams(utmParams).toString();
+function appendUtmParamsToLinks(params) {
+    if (params.length > 0) {
         document.querySelectorAll('a').forEach(link => {
-            const url = new URL(link.href);
-            url.search += (url.search ? '&' : '') + paramsString;
-            link.href = url.toString();
+            try {
+                const url = new URL(link.href, window.location.origin);
+                const existingParams = new URLSearchParams(url.search);
+
+                // Only append parameters if they don't already exist in the URL
+                for (const [key, value] of params) {
+                    if (!existingParams.has(key)) {
+                        existingParams.set(key, value);
+                    }
+                }
+
+                url.search = existingParams.toString();
+                link.href = url.toString();
+            } catch (e) {
+                console.error('Invalid URL:', link.href, e);
+            }
         });
     }
 }
@@ -155,7 +166,7 @@ function appendUtmParamsToLinks(utmParams) {
 // On page load
 document.addEventListener('DOMContentLoaded', () => {
     const currentParams = getUrlParams();
-    if (Object.keys(currentParams).length > 0) {
+    if (currentParams.length > 0) {
         setUtmParams(currentParams);
     }
     const storedParams = getStoredUtmParams();
